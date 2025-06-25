@@ -12,7 +12,7 @@ if (isset($_POST['submit-button'])) {
     $brandname = trim(htmlspecialchars($_POST['brandname']));
     $message = trim(htmlspecialchars($_POST['message']));
 
-    if ($name === '' || $email === '' || $brandname === '' || $message === '') { {
+    if ($name === '' || $email === '' || $brandname === '' || $message === '') {
         $error = "All fields are required and cannot be just spaces.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
