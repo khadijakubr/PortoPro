@@ -48,7 +48,7 @@ if (isset($_POST['submit-button'])) {
         <h1 id="contact-title">Contact Me</h1>
         <p id="contact-description">If you'd like to get in touch, feel free to reach out!</p>
         <div class="contact-buttons">
-        <button><a href="mailto:khadijatulkubroalhaddar@gmail.com">Email Me</a></button>
+        <button><a href="mailto:infoheyje@gmail.com">Email Me</a></button>
         <button><a href="https://www.linkedin.com/in/khadijatul-kubro-61b946304/">LinkedIn</a></button>
     </div>
     <div class="contact-form">
