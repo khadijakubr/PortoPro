@@ -1,6 +1,6 @@
 <section class="homepage">
     <div class="home-container">
-    <img id="profile-pic" src="media/Image/Khadija.JPG" alt="Photo of Khadijatul">
+    <img id="profile-pic" src="media/image/Khadija.JPG" alt="Photo of Khadijatul">
     <div class="home-description">
       <h1>Hi ! I'M KHADIJATUL KUBRO</h1>
       <p>I am a passionate content creator specializing in food and beverage, 

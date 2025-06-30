@@ -110,7 +110,7 @@ li a:hover {
 
 .home-description p {
     font-family: 'Apple Garamond';
-    font-size: 20px;
+    font-size: 1rem;
     line-height: 1.3;
     color: black;
     text-align: justify;
@@ -119,7 +119,7 @@ li a:hover {
 
 .home-description h1 {
     font-family: 'Goride Sans';
-    font-size: 50px;
+    font-size: 3rem;
     letter-spacing: 1px;
     color: black;
     text-align: left;
@@ -163,6 +163,220 @@ li a:hover {
 }
 
 
+
+/*pengaturan project.php*/
+.projects-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#projects-header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.projects-container h1 {
+  font-family: 'Goride Sans';
+  font-size: 50px;
+  color: black;
+  text-align: center;
+  padding: 30px 30px 30px 0;
+}
+
+.projects-buttons {
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.category {
+  margin-bottom: 3rem;
+ }
+
+.category-container {
+    background: #fafafa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.category-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  color: black;
+  font-family: 'Goride Sans';
+  text-align: left;
+  margin-right: 3rem;
+}
+
+.gallery {
+    display: flex;
+    gap: 5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-behavior: smooth;
+}
+
+.item {
+    flex: 0 0 auto;
+    width: 150px;
+}
+
+.item img:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+
+}
+.item img:active {
+  transform: scale(0.95);
+}
+
+.thumbnail {
+  width: 100%;
+  height: 300px;
+  aspect-ratio: 16/9;
+  background-color: #ccc;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-title {
+  font-family: 'Goride Sans';
+  font-size: 1.2rem;
+  color: black;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.project-description {
+  font-family: 'Apple Garamond';
+  padding-top: 8px;
+  text-align: justify;
+  line-height: 1.2;
+  max-width: 150px;
+  margin: 0 auto;
+  font-size: 0.8rem;
+  color: black;
+}
+
+.project-title a {
+  text-decoration: none;
+  color: black;
+}
+
+#no-project {
+  text-align: right;
+}
+
+/* scrollbar styling */
+.gallery::-webkit-scrollbar {
+  height: 8px;
+}
+.gallery::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+
+.gallery::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/*pengaturan subpage project.php*/
+.projects-subpage-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.projects-subpage {
+    background-color: gainsboro;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.projects-subpage h1 {
+  font-family: 'Goride Sans';
+  font-size: 30px;
+  color: black;
+  text-align: center;
+}
+
+
+
+
+/*pengaturan form*/
+.form {
+  display: flex;
+  padding: 10px;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.form input, .form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  font-family: 'apple garamond';
+  background-color: #f0f0f0;
+  color: black;
+  font-size: medium;
+}
+
+.form label {
+  font-family: 'Apple Garamond';
+  font-size: 18px;
+  color: black;
+  display: block;       
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  font-family: 'apple garamond';
+  background-color: #f0f0f0;
+  color: black;
+  font-size: medium;
+}
+
+
+
+
+
+
+
 /*pengaturan contact.php*/
 .contact {
     display: flex;
@@ -198,23 +412,23 @@ li a:hover {
     max-width: 100%;
   }
 
-  .contact-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin: 10px 0 30px 0;
-  }
+.contact-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 10px 0 30px 0;
+}
 
-  .contact-buttons button {
-    font-size: 15px;
-    background-color: orange;
-  }
+.contact-buttons button {
+  font-size: 15px;
+  background-color: orange;
+}
 
-  .contact-buttons button:hover {
-    background-color: black;
-    transition: background-color 0.3s ease;
-  }
+.contact-buttons button:hover {
+  background-color: black;
+  transition: background-color 0.3s ease;
+}
 
 .contact-form {
     max-width: 100%;
@@ -236,41 +450,14 @@ li a:hover {
   padding: 10px;
 }
 
-.contact-form label {
-  font-family: 'Apple Garamond';
-  font-size: 22px;
-  color: black;
-  display: block;       
-  margin-bottom: 5px;
-  font-weight: bold;
-}
 
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 20px;
-  border: none;
-  border-radius: 5px;
-  font-family: 'apple garamond';
-  background-color: #f0f0f0;
-  color: black;
-  font-size: medium;
-}
 
-.contact-form form {
-  display: flex;
-  padding: 10px;
-  flex-wrap: wrap;
-  flex-direction: column;
-}
 
 
 
 /*pengaturan button*/
 button {
     font-family: 'Goride Sans';
-    font-size: 25px;
     color: white;
     border: none;
     padding: 15px 20px;
@@ -294,6 +481,11 @@ button a {
     color: white;
   }
 
+
+
+
+
+
  /* Footer */
 footer {
   background-color: black;
@@ -309,6 +501,13 @@ footer p {
   font-size: 15px;
   color: white;
 }
+
+
+
+
+
+
+/* other styles */
 
 .php-message {
   font-family: 'Goride Sans';

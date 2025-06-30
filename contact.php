@@ -58,7 +58,7 @@ if (isset($_POST['submit-button'])) {
                 echo "<br><p class='php-message'>$success</p>";
             }
         ?>
-        <form action="index.php?act=ct" method="POST">
+        <form action="index.php?act=ct" method="POST" class="form">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
             <br>
