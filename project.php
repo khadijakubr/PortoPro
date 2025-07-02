@@ -39,49 +39,58 @@ elseif ($_GET['p'] == 'add_category') {
 }
 elseif ($_GET['p'] == 'add_project') {
     include_once 'add_project.php';
-}
-else {
-    echo "<h1>404 Subpage Not Found</h1>";
+} elseif ($_GET['p'] == 'update_project') {
+    if (isset($_GET['id'])) {
+        $project_id = $_GET['id'];
+        include_once 'update_project.php';
+    } else {
+        echo "<h1 class='php-message'>404 Project Not Found</h1>";
+    }
+} elseif ($_GET['p'] == 'delete_category') {
+        include_once 'delete_category.php';
+} else {
+    echo "<h1 class='php-message'>404 Subpage Not Found</h1>";
 }
 ?>
 
-<?php if (!isset($_GET['p'])): ?>
+<?php if (!isset($_GET['p'])){ ?>
 <div class="projects-container">
     <div id="projects-header">
         <h1>PROJECTS</h1>
         <div id="projects-buttons">
             <a href="?act=pj&p=add_project" class="button"><button>Add Project</button></a>
             <a href="?act=pj&p=add_category" class="button"><button>Add Category</button></a>
+            <a href="?act=pj&p=delete_category" class="button"><button>Delete Category</button></a>
         </div>
     </div>
     <?php 
         if (!empty($message)) { echo $message; }
     ?>
-    <?php if (!empty($categories)):
-            foreach ($categories as $category): ?>
+    <?php if (!empty($categories)){
+            foreach ($categories as $category){ ?>
         <div class="category-container">
             <div class="category-header">
                 <div class="category-title"><?php echo $category['name']; ?></div>
             </div>
             <div class="gallery">
-                <?php if (empty($category['projects'])): ?>
+                <?php if (empty($category['projects'])){ ?>
                     <div class="additional-msg" id="no-project">NO PROJECT FOUND</div>
-                <?php endif; ?>
-                <?php foreach ($category['projects'] as $project): ?>
+                <?php } ?>
+                <?php foreach ($category['projects'] as $project){ ?>
                     <div class="item">
                         <a href="<?php echo $project['link']; ?>" target="_blank">
                             <img src="media/image/uploads/<?php echo $project['thumbnail']; ?>" alt="<?php echo $project['title']; ?>" class="thumbnail">
                         </a>
-                        <div class="project-title"><a href="update_project.php?id=<?php echo $project['id']; ?>"><?php echo $project['title']; ?></a></div>
+                        <div class="project-title"><a href="?act=pj&p=update_project&id=<?php echo $project['id']; ?>"><?php echo $project['title']; ?></a></div>
                         <div class="project-description"><?php echo $project['description']; ?></div>
                     </div>
-                <?php endforeach; ?>
+                <?php } ?>
             </div>
         </div>
-    <?php endforeach; ?>
-    <?php endif; ?>
+    <?php } ?>
+    <?php } ?>
 </div>
-<?php endif; ?>
+<?php } ?>
 <?php
 include_once 'footer.php';
 ?>

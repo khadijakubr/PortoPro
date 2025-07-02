@@ -6,12 +6,13 @@ $name = $email = $brandname = $message = '';
 $error = '';
 $success = '';
 
+// Check if the form is submitted
 if (isset($_POST['submit-button'])) {
     $name = trim(htmlspecialchars($_POST['name']));
     $email = trim(htmlspecialchars($_POST['email']));
     $brandname = trim(htmlspecialchars($_POST['brandname']));
     $message = trim(htmlspecialchars($_POST['message']));
-
+    // Validate the input
     if ($name === '' || $email === '' || $brandname === '' || $message === '') {
         $error = "All fields are required and cannot be just spaces.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

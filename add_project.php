@@ -3,7 +3,7 @@ include_once 'connection.php';
 include_once 'navigation.php';
 
 $message = "";
-
+// Check if the form is submitted
 if (isset($_POST['submit'])) {
     $category_id = $_POST['category_id'];
     $title = trim(htmlspecialchars($_POST['title']));
@@ -18,6 +18,7 @@ if (isset($_POST['submit'])) {
         if (file_exists($thumbnail_dest)) {
             $message = "File already exists.";
         } else {
+            // If the file uploaded, insert the project info into the database
             if (move_uploaded_file($thumbnail_tmp, $thumbnail_dest)) {
                 $insert = "INSERT INTO projects (category_id, title, description, thumbnail, link) 
                            VALUES ('$category_id', '$title', '$description', '$thumbnail_name', '$link')";
@@ -50,13 +51,21 @@ if (isset($_POST['submit'])) {
             ?>
             </select><br>
             <label>Project Title:</label>
-            <input type="text" name="title" id="project-title" required><br>
+            <input type="text" name="title" id="project-title" required>
+            <br>
+
             <label>Project Description:</label>
-            <textarea name="description" id="project-description" required></textarea><br>
+            <textarea name="description" id="project-description" required></textarea>
+            <br>
+
             <label>Project Thumbnail:</label>
-            <input type="file" name="thumbnail" id="project-thumbnail" accept="image/*" required><br>
+            <input type="file" name="thumbnail" id="project-thumbnail" accept="image/*" required>
+            <br>
+
             <label>Project Link:</label>
-            <input type="url" name="link" id="project-link"><br>
+            <input type="url" name="link" id="project-link">
+            <br>
+
             <button type="submit" name="submit">Add Project</button>
         </form>
     </div>
