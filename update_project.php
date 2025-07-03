@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include_once 'connection.php';
 include_once 'navigation.php';
 include_once 'delete_project.php';
@@ -87,6 +89,9 @@ if (isset($_POST['delete'])) {
 }
 ?>
 
+<?php
+if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true) {
+?>
 <div class="projects-subpage-container">
     <div class="projects-subpage">
         <h1>Update Project Info</h1>
@@ -132,6 +137,11 @@ if (isset($_POST['delete'])) {
                     <button type="submit" name="delete" id="delete-project-btn" onclick="return confirm('Delete this project?');">Delete Project</button>
                 </div>
             </form>
+        <?php } 
+        } else { ?>
+            <p class="php-message decline-message">You are not authorized to view this page.</p>
         <?php } ?>
     </div>
 </div>
+
+<?php include_once 'footer.php'; ?>

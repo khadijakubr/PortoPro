@@ -20,6 +20,8 @@
             include_once 'contact.php';
         } elseif ($_GET['act'] == 'pj') {
             include_once 'project.php';
+        } elseif ($_GET['act'] == 'lgn') {
+            include_once 'admin_login.php';
         } else {
             echo "<h1>404 Not Found</h1>";
             echo "<p>The page you are looking for does not exist.</p>";

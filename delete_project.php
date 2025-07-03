@@ -1,6 +1,8 @@
 <?php
 include_once 'connection.php';
 
+// Function to delete a project
+// This function deletes a project and its associated thumbnail file if it exists.
 function delete_project($project_id) {
     global $connect;
     $message = "";

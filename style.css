@@ -336,6 +336,7 @@ li a:hover {
   text-align: center;
 }
 
+
 /* pengaturan update_project.php */
 #update-project-msg {
   padding: 30px 0 20px 0;
@@ -370,6 +371,7 @@ li a:hover {
   background-color: red;
 }
 
+
 /* pengaturan delete_category.php */
 .delete-category-container {
   display: flex;
@@ -388,6 +390,69 @@ li a:hover {
   text-align: left;
   width: 50%;
 }
+
+
+/* pengaturan admin_login.php */
+.admin-login-container {
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  width: 100%;
+}
+
+.admin-login-container h1 {
+  font-family: 'Goride Sans';
+  font-size: 30px;
+  color: black;
+  text-align: center;
+  margin: 10px;
+}
+
+.admin-login-container p {
+  font-family: 'Apple Garamond';
+  font-size: 18px;
+  color: black;
+  text-align: center;
+  margin: -10px 0 15px 0;
+}
+
+.admin-login-form {
+  background-color: gainsboro;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  width: 300px;
+}
+
+#password-container {
+  position: relative; 
+  display: inline-block;
+}
+
+#toggle-password {
+  position: absolute;
+  right: 5px;
+  top: 1px;
+  padding: 2px 5px;
+  background-color: transparent;
+  color: grey;
+  border: none;
+  cursor: pointer;
+}
+
+#after-login-container {
+  background-color: gainsboro;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  border-radius: 10px;
+}
+
 
 /*pengaturan form*/
 .form {
@@ -429,12 +494,6 @@ li a:hover {
   color: black;
   font-size: medium;
 }
-
-
-
-
-
-
 
 /*pengaturan contact.php*/
 .contact {
@@ -510,10 +569,6 @@ li a:hover {
 }
 
 
-
-
-
-
 /*pengaturan button*/
 button {
     font-family: 'Goride Sans';
@@ -541,10 +596,6 @@ button a {
   }
 
 
-
-
-
-
  /* Footer */
 footer {
   background-color: black;
@@ -560,10 +611,6 @@ footer p {
   font-size: 15px;
   color: white;
 }
-
-
-
-
 
 
 /* other styles */
@@ -584,4 +631,12 @@ footer p {
   font-size: 15px;
   color: black;
   text-align: center;
+}
+
+.decline-message {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 86vh;
 }

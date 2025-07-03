@@ -29,6 +29,7 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
+<?php if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true) { ?>
 <div class="projects-subpage-container">
     <div class="projects-subpage">
         <h1>Add New Category</h1>
@@ -42,5 +43,8 @@ if (isset($_POST['submit'])) {
         </form>
     </div>
 </div>
+<?php } else { ?>
+    <p class="php-message decline-message">You are not authorized to view this page.</p>
+<?php } ?>
 
 <?php include_once 'footer.php'; ?>

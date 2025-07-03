@@ -13,10 +13,13 @@ if (isset($_POST['submit'])) {
     if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] == 0) {
         $thumbnail_name = $_FILES['thumbnail']['name'];
         $thumbnail_tmp = $_FILES['thumbnail']['tmp_name'];
+        $thumbnail_size = $_FILES['thumbnail']['size'];
         $thumbnail_dest = "media/image/uploads/" . $thumbnail_name;
 
         if (file_exists($thumbnail_dest)) {
             $message = "File already exists.";
+        } elseif ($thumbnail_size > 10000000) { // Check if file size is greater than 10MB
+            $message = "File size exceeds 10MB.";
         } else {
             // If the file uploaded, insert the project info into the database
             if (move_uploaded_file($thumbnail_tmp, $thumbnail_dest)) {
@@ -35,6 +38,7 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
+<?php if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true) { ?>
 <div class="projects-subpage-container">
     <div class="projects-subpage">
         <h1>Add New Project</h1>
@@ -58,7 +62,7 @@ if (isset($_POST['submit'])) {
             <textarea name="description" id="project-description" required></textarea>
             <br>
 
-            <label>Project Thumbnail:</label>
+            <label>Project Thumbnail: (max 10MB)</label>
             <input type="file" name="thumbnail" id="project-thumbnail" accept="image/*" required>
             <br>
 
@@ -70,4 +74,8 @@ if (isset($_POST['submit'])) {
         </form>
     </div>
 </div>
+<?php } else { ?>
+    <p class="php-message decline-message">You are not authorized to view this page.</p>
+<?php } ?>
+
 <?php include_once 'footer.php'; ?>
