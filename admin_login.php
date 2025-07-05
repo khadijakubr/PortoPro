@@ -1,6 +1,4 @@
 <?php
-session_start();
-
 include_once 'connection.php';
 include_once 'navigation.php';
 include_once 'admin_logout.php';
