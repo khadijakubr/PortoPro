@@ -453,6 +453,53 @@ li a:hover {
   border-radius: 10px;
 }
 
+#after-login-btn-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* pengaturan list_clients.php */
+.list-clients-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.list-clients-container h1 {
+  font-family: 'Goride Sans';
+  font-size: 30px;
+  color: black;
+  text-align: center;
+  margin: 10px;
+}
+
+.list-clients-container table {
+  width: 100%;
+  max-width: 90%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: 'Apple Garamond';
+  font-size: 18px; 
+  color: black;
+  text-align: center;
+}
+
+.list-clients-container table th,
+.list-clients-container table td {
+  padding: 12px 15px;
+  border: solid 1px #fafafa;
+}
+
+.list-clients-container table th {
+  background-color: orange;
+  color: white;
+}
+
 
 /*pengaturan form*/
 .form {

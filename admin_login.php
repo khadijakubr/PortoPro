@@ -49,17 +49,25 @@ if (isset($_POST['logout'])) {
         </form>
     </div>
 </div>
- <?php } else { ?>
+<?php } else { 
+            if (isset($_GET['p']) && $_GET['p'] == 'list_clients') {
+                include_once 'list_clients.php';
+            } else {
+?>
     <div class="admin-login-container">
         <div id="after-login-container">
             <h1>Welcome, Admin!</h1>
             <p class="additional-msg">You are already logged in.</p>
-            <form action="" method="POST" class="form">
-                <button type="submit" name="logout">Logout</button>
-            </form>
+            <div id="after-login-btn-container">
+                <a href="?act=lgn&p=list_clients" class="button"><button>List Clients</button></a>
+                <form action="" method="POST" class="form">
+                    <button type="submit" name="logout">Logout</button>
+                </form>
+            </div>
         </div>
     </div>
-<?php } ?>
+<?php }
+} ?>
 
 <script> // Toggle password visibility
 document.getElementById("toggle-password").addEventListener("click", function () {
