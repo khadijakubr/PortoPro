@@ -20,7 +20,7 @@ if (!isset($_GET['p'])) {
         $category_id = $category['id'];
         $category_name = $category['categoryname'];
 
-        $project_query = "SELECT * FROM projects WHERE category_id = {$category_id}";
+        $project_query = "SELECT * FROM projects WHERE category_id = {$category_id} ORDER BY id DESC";
         $project_result = mysqli_query($connect, $project_query);
 
         $projects = [];
