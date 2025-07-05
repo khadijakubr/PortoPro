@@ -3,6 +3,7 @@ include_once 'connection.php';
 include_once 'navigation.php';
 
 $message = "";
+
 // Check if the form is submitted
 if (isset($_POST['submit'])) {
     $category_id = $_POST['category_id'];
@@ -13,29 +14,26 @@ if (isset($_POST['submit'])) {
     if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] == 0) {
         $thumbnail_name = $_FILES['thumbnail']['name'];
         $thumbnail_tmp = $_FILES['thumbnail']['tmp_name'];
-        $thumbnail_size = $_FILES['thumbnail']['size'];
         $thumbnail_dest = "media/image/uploads/" . $thumbnail_name;
 
-        if (file_exists($thumbnail_dest)) {
-            $message = "File already exists.";
-        } elseif ($thumbnail_size > 10000000) { // Check if file size is greater than 10MB
-            $message = "File size exceeds 10MB.";
-        } else {
-            // If the file uploaded, insert the project info into the database
-            if (move_uploaded_file($thumbnail_tmp, $thumbnail_dest)) {
-                $insert = "INSERT INTO projects (category_id, title, description, thumbnail, link) 
-                           VALUES ('$category_id', '$title', '$description', '$thumbnail_name', '$link')";
-                if (mysqli_query($connect, $insert)) {
-                    $message = "Project added!";
-                } else {
-                    $message = "Failed to add project: " . mysqli_error($connect);
-                }
+            if (file_exists($thumbnail_dest)) {
+                $message = "File already exists.";
             } else {
-                $message = "Failed to upload image.";
+                // If the file uploaded, insert the project info into the database
+                if (move_uploaded_file($thumbnail_tmp, $thumbnail_dest)) {
+                    $insert = "INSERT INTO projects (category_id, title, description, thumbnail, link) 
+                            VALUES ('$category_id', '$title', '$description', '$thumbnail_name', '$link')";
+                    if (mysqli_query($connect, $insert)) {
+                        $message = "Project added!";
+                    } else {
+                        $message = "Failed to add project: " . mysqli_error($connect);
+                    }
+        } else {
+            $message = "Failed to upload image.";
+        }
             }
         }
     }
-}
 ?>
 
 <?php if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true) { ?>
@@ -62,8 +60,18 @@ if (isset($_POST['submit'])) {
             <textarea name="description" id="project-description" required></textarea>
             <br>
 
-            <label>Project Thumbnail: (max 10MB)</label>
+            <label>Project Thumbnail: (max 8MB)</label>
             <input type="file" name="thumbnail" id="project-thumbnail" accept="image/*" required>
+            <script>
+            // Validate file size for thumbnail upload
+            document.getElementById('project-thumbnail').addEventListener('change', function() {
+                const maxSize = 8 * 1024 * 1024;
+                if (this.files[0].size > maxSize) {
+                    alert('File size exceeds 8MB limit. Please select a smaller file.');
+                    this.value = ''; // clear the selection
+                }
+            });
+            </script>
             <br>
 
             <label>Project Link:</label>
