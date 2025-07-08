@@ -38,8 +38,7 @@ if (!isset($_GET['p'])) {
 // SUBPAGE HANDLER
 elseif ($_GET['p'] == 'add_category') {
     include_once 'add_category.php';
-}
-elseif ($_GET['p'] == 'add_project') {
+} elseif ($_GET['p'] == 'add_project') {
     include_once 'add_project.php';
 } elseif ($_GET['p'] == 'update_project') {
     if (isset($_GET['id'])) {
@@ -49,8 +48,15 @@ elseif ($_GET['p'] == 'add_project') {
         echo "<h1 class='php-message'>404 Project Not Found</h1>";
     }
 } elseif ($_GET['p'] == 'delete_category') {
-        include_once 'delete_category.php';
-} else {
+    include_once 'delete_category.php';
+} elseif ($_GET['p'] == 'detail_project'){
+    if (isset($_GET['id'])) {
+        $project_id = $_GET['id'];
+        include_once 'detail_project.php';
+    } else {
+        echo "<h1 class='php-message'>404 Project Not Found</h1>";
+    }
+}else {
     echo "<h1 class='php-message'>404 Subpage Not Found</h1>";
 }
 ?>
@@ -99,7 +105,9 @@ elseif ($_GET['p'] == 'add_project') {
                                     <?php echo $project['title']; ?>
                                 </a>
                             <?php } else { ?>
-                                <?php echo $project['title']; ?>
+                                <a href="?act=pj&p=detail_project&id=<?php echo $project['id']?>">
+                                    <?php echo $project['title']; ?>
+                                </a>
                             <?php } ?>
                         </div>
 
