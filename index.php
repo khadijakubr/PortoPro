@@ -6,6 +6,15 @@
 //           di log + halaman putih).
 // SESUDAH : bootstrap (env + DB + session) dimuat SEBELUM output apa pun.
 //           Gagal koneksi = pesan rapi + status 500 benar, bukan layar putih.
+// [FIX-OB 2026-10-07]
+// SEBELUM  : logika di sub-halaman (login: session_regenerate_id + header
+//           Location; logout: header + setcookie) jalan SETELAH <head>
+//           terkirim → warning "headers already sent" + redirect gagal.
+// SESUDAH : ob_start() menampung seluruh output di buffer sampai script
+//           selesai, sehingga header/cookie/session boleh dikirim kapan pun
+//           selama render. ALASAN: arsitektur app mencampur logika + view
+//           dalam satu render; buffering adalah obat standar pola ini.
+ob_start();
 require_once __DIR__ . '/config/bootstrap.php';
 ?>
 <!DOCTYPE html>

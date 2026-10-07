@@ -55,8 +55,15 @@ function cloudinary_upload($tmp_path, $original_name) {
     $secret = (string) getenv('CLOUDINARY_API_SECRET');
     $folder = (string) (getenv('CLOUDINARY_FOLDER') ?: 'portopro/uploads');
     $timestamp = time();
-    // Signature untuk params yang dikirim (urut abjad): folder & timestamp.
-    $signature = sha1("folder={$folder}&timestamp={$timestamp}{$secret}");
+    $public_id = pathinfo(portopro_safe_filename($original_name), PATHINFO_FILENAME);
+    // [FIX-SIGNATURE 2026-10-07]
+    // SEBELUM  : signature = sha1("folder=..&timestamp=.." + secret), padahal
+    //           parameter public_id ikut dikirim → Cloudinary menolak:
+    //           "Invalid Signature ... String to sign - 'folder=..&public_id=..&timestamp=..'".
+    // SESUDAH : semua parameter yang dikirim (urut abjad: folder, public_id,
+    //           timestamp) masuk string-to-sign, sesuai aturan signed upload
+    //           Cloudinary. (api_key & file memang tidak ikut signature.)
+    $signature = sha1("folder={$folder}&public_id={$public_id}&timestamp={$timestamp}{$secret}");
 
     $post = [
         'file'       => new CURLFile($tmp_path),
@@ -64,7 +71,7 @@ function cloudinary_upload($tmp_path, $original_name) {
         'timestamp'  => $timestamp,
         'signature'  => $signature,
         'folder'     => $folder,
-        'public_id'  => pathinfo(portopro_safe_filename($original_name), PATHINFO_FILENAME),
+        'public_id'  => $public_id,
     ];
     $ch = curl_init("https://api.cloudinary.com/v1_1/{$cloud}/image/upload");
     curl_setopt_array($ch, [
