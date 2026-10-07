@@ -1,0 +1,3 @@
+# [MIGRASI-CLOUDINARY] Blokir akses browser ke folder db/ (defense in depth;
+# skrip migrasi juga menolak non-CLI sendiri). SQL editor tidak terpengaruh.
+Require all denied

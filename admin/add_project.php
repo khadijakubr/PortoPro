@@ -41,23 +41,31 @@ if (isset($_POST['submit'])) {
             $public_id   = $stored['public_id'] ?? null;
 
             // SEBELUM: query string interpolasi (SQLi). SESUDAH: prepared.
+            // [FIX-LOG 2026-10-07] SEBELUM: log hanya $connect->error yang
+            // ternyata KOSONG untuk error level-statement → vonis hilang.
+            // SESUDAH: tangkap $stmt->error + errno SEBELUM close().
             $ok = false;
+            $db_err = '';
+            $db_errno = 0;
             $stmt = $connect->prepare("INSERT INTO projects (category_id, title, description, thumbnail, thumbnail_public_id, link) VALUES (?, ?, ?, ?, ?, ?)");
             if ($stmt) {
                 $stmt->bind_param("isssss", $category_id, $title, $description, $thumb_value, $public_id, $link);
                 $ok = $stmt->execute();
+                if (!$ok) { $db_err = $stmt->error; $db_errno = $stmt->errno; }
                 $stmt->close();
             } else {
                 // Fallback: DB lama belum punya kolom thumbnail_public_id.
+                $db_err = $connect->error; $db_errno = $connect->errno;
                 $stmt = $connect->prepare("INSERT INTO projects (category_id, title, description, thumbnail, link) VALUES (?, ?, ?, ?, ?)");
                 if ($stmt) {
                     $stmt->bind_param("issss", $category_id, $title, $description, $thumb_value, $link);
                     $ok = $stmt->execute();
+                    if (!$ok) { $db_err = $stmt->error; $db_errno = $stmt->errno; }
                     $stmt->close();
                 }
             }
             $message = $ok ? "Project added!" : "Failed to add project. Try again.";
-            if (!$ok) error_log('[PortoPro] insert project gagal: ' . $connect->error);
+            if (!$ok) error_log('[PortoPro] insert project gagal: [' . $db_errno . '] ' . ($db_err ?: $connect->error ?: 'unknown'));
         }
     } else {
         $message = "Please choose a thumbnail image.";
