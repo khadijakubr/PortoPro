@@ -1,5 +1,7 @@
 <?php
-session_start();
+// [RENDER-FIX 2 lanjutan]
+// lewat bootstrap.php (guard session_status + cookie aman).
+require_once __DIR__ . '/../config/bootstrap.php';
 ?>
 
 <div class="navbar">

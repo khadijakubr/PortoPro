@@ -1,0 +1,7 @@
+.git
+.gitignore
+.tmp/
+.env
+media/image/uploads/*
+!media/image/uploads/.gitkeep
+.DS_Store

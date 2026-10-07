@@ -1,6 +1,17 @@
 <?php
-include_once 'connection.php';
-include_once 'navigation.php';
+// ============================================================================
+// [RENDER-FIX 6] project.php — prepared + escape output + thumb CDN
+// ----------------------------------------------------------------------------
+// SEBELUM  : "SELECT * FROM projects WHERE category_id = {$category_id}"
+//           (interpolasi) + echo $category['name'] / $project[...] mentah
+//           (XSS) + src="media/image/uploads/..." relatif.
+// SESUDAH : prepared statement + e() di semua echo + portopro_thumb_src()
+//           (mendukung URL Cloudinary & file lokal lama).
+// ============================================================================
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once __DIR__ . '/../lib/cloudinary.php';
+// [RESTRUKTUR] navigation pindah ke includes/.
+include_once __DIR__ . '/../includes/navigation.php';
 
 // if there's no subpage specified, show the main projects page
 if (!isset($_GET['p'])) {
@@ -16,16 +27,20 @@ if (!isset($_GET['p'])) {
     }
     // Fetch categories and their associated projects
     while ($category = mysqli_fetch_assoc($category_result)) {
-        $category_id = $category['id'];
+        $category_id = (int) $category['id'];
         $category_name = $category['categoryname'];
 
-        $project_query = "SELECT * FROM projects WHERE category_id = {$category_id} ORDER BY id DESC";
-        $project_result = mysqli_query($connect, $project_query);
+        // SEBELUM: interpolasi langsung. SESUDAH: prepared (anti-SQLi).
+        $stmt = $connect->prepare("SELECT * FROM projects WHERE category_id = ? ORDER BY id DESC");
+        $stmt->bind_param("i", $category_id);
+        $stmt->execute();
+        $project_result = $stmt->get_result();
 
         $projects = [];
-        while ($project = mysqli_fetch_assoc($project_result)) {
-            $projects[] = $project; 
+        while ($project = $project_result->fetch_assoc()) {
+            $projects[] = $project;
         }
+        $stmt->close();
 
         $projects_gallery[] = [
             'id' => $category_id,
@@ -36,23 +51,24 @@ if (!isset($_GET['p'])) {
 }
 
 // SUBPAGE HANDLER
+// [RESTRUKTUR] sub-halaman admin pindah ke admin/.
 elseif ($_GET['p'] == 'add_category') {
-    include_once 'add_category.php';
+    include_once __DIR__ . '/../admin/add_category.php';
 } elseif ($_GET['p'] == 'add_project') {
-    include_once 'add_project.php';
+    include_once __DIR__ . '/../admin/add_project.php';
 } elseif ($_GET['p'] == 'update_project') {
     if (isset($_GET['id'])) {
         $project_id = $_GET['id'];
-        include_once 'update_project.php';
+        include_once __DIR__ . '/../admin/update_project.php';
     } else {
         echo "<h1 class='php-message'>404 Project Not Found</h1>";
     }
 } elseif ($_GET['p'] == 'delete_category') {
-    include_once 'delete_category.php';
+    include_once __DIR__ . '/../admin/delete_category.php';
 } elseif ($_GET['p'] == 'detail_project'){
     if (isset($_GET['id'])) {
         $project_id = $_GET['id'];
-        include_once 'detail_project.php';
+        include_once __DIR__ . '/detail_project.php';
     } else {
         echo "<h1 class='php-message'>404 Project Not Found</h1>";
     }
@@ -73,7 +89,7 @@ elseif ($_GET['p'] == 'add_category') {
         </div>
         <?php } ?>
     </div>
-    <?php 
+    <?php
         if (!empty($message)) { echo $message; }
     ?>
     <?php if (!empty($projects_gallery)){
@@ -83,7 +99,7 @@ elseif ($_GET['p'] == 'add_category') {
         <div class="category-container">
 
             <div class="category-header">
-                <div class="category-title"><?php echo $category['name']; //Take the name of category and print it ?></div>
+                <div class="category-title"><?php echo e_text($category['name']); //Take the name of category and print it ?></div>
             </div>
 
             <div class="gallery">
@@ -95,23 +111,23 @@ elseif ($_GET['p'] == 'add_category') {
                 <?php // Loop through each project in the category
                 foreach ($category['projects'] as $project){ ?>
                     <div class="item">
-                        <a href="<?php echo $project['link']; ?>" target="_blank">
-                            <img src="media/image/uploads/<?php echo $project['thumbnail']; ?>" alt="<?php echo $project['title']; ?>" class="thumbnail">
+                        <a href="<?php echo e($project['link']); ?>" target="_blank">
+                            <img src="<?php echo e(portopro_thumb_src($project['thumbnail'])); ?>" alt="<?php echo e_text($project['title']); ?>" class="thumbnail" loading="lazy">
                         </a>
 
                         <div class="project-title">
                             <?php if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true) { ?>
-                                <a href="?act=pj&p=update_project&id=<?php echo $project['id']; ?>">
-                                    <?php echo $project['title']; ?>
+                                <a href="?act=pj&p=update_project&id=<?php echo (int)$project['id']; ?>">
+                                    <?php echo e_text($project['title']); ?>
                                 </a>
                             <?php } else { ?>
-                                <a href="?act=pj&p=detail_project&id=<?php echo $project['id']?>">
-                                    <?php echo $project['title']; ?>
+                                <a href="?act=pj&p=detail_project&id=<?php echo (int)$project['id']?>">
+                                    <?php echo e_text($project['title']); ?>
                                 </a>
                             <?php } ?>
                         </div>
 
-                        <div class="project-description"><?php echo $project['description']; ?></div>
+                        <div class="project-description"><?php echo e_text($project['description']); ?></div>
                     </div>
 
                 <?php } ?>
@@ -123,5 +139,6 @@ elseif ($_GET['p'] == 'add_category') {
 <?php } ?>
 
 <?php
-include_once 'footer.php';
+// [RESTRUKTUR] footer pindah ke includes/.
+include_once __DIR__ . '/../includes/footer.php';
 ?>

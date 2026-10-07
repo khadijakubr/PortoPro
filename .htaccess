@@ -1,0 +1,22 @@
+# ============================================================================
+# [RENDER-FIX 3 lanjutan] .htaccess — file BARU
+# SEBELUM  : file sensitif (.env, *.sql, .git) bisa diakses publik bila
+#           Apache document-root menunjuk ke folder ini.
+# SESUDAH : blokir akses langsung + matikan directory listing.
+# ============================================================================
+Options -Indexes
+
+<FilesMatch "^(\.env|\.git|.*\.sql|.*\.log)$">
+    Require all denied
+</FilesMatch>
+
+<Files ".env*">
+    Require all denied
+</Files>
+
+# Header keamanan dasar (mod_headers aktif di Dockerfile)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

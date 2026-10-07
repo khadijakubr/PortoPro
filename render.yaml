@@ -1,0 +1,41 @@
+# ============================================================================
+# [RENDER-FIX 3 lanjutan] render.yaml Blueprint — file BARU
+# SEBELUM  : deploy manual via Dashboard (rawan lupa env var).
+# SESUDAH : "New > Blueprint > pilih repo" lalu Render baca file ini:
+#           1 service web Docker + health check + daftar env var.
+# ALASAN  : satu sumber kebenaran; reviewer tinggal isi value rahasia.
+# PENTING : value rahasia (DB_PASS, CLOUDINARY_API_SECRET) JANGAN ditulis di
+#           sini — isi via Dashboard setelah Blueprint dibuat (sync: false).
+# ============================================================================
+services:
+  - type: web
+    name: portopro
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # Render menunggu path ini 200 OK sebelum kirim traffic.
+    healthCheckPath: /health.php
+    envVars:
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: https://portopro.onrender.com 
+      - key: DB_HOST
+        sync: false 
+      - key: DB_PORT
+        value: "4000" 
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        value: PortoPro
+      - key: DB_SSL
+        value: "true" 
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_FOLDER
+        value: portopro/uploads

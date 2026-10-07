@@ -1,5 +1,16 @@
 <?php
-include_once 'connection.php';
+// ============================================================================
+// [RENDER-FIX 7] contact.php — prepared statement + escape
+// ----------------------------------------------------------------------------
+// SEBELUM  : "SELECT * FROM contact_info WHERE email = '$email'" dan
+//           "INSERT ... VALUES ('$name','$email','$brandname')" — email/nama
+//           dari pengunjung masuk mentah ke SQL (SQLi). $success echo $name
+//           mentah (XSS). htmlspecialchars dipakai saat SIMPAN ($message ikut
+//           hilang karena tidak ada kolom message di DB).
+// SESUDAH : prepared statements; simpan mentah + escape saat tampil;
+//           pesan error DB masuk log, bukan ke layar.
+// ============================================================================
+require_once __DIR__ . '/../config/bootstrap.php';
 
 //Save contact form data to the database
 $name = $email = $brandname = $message = '';
@@ -8,26 +19,37 @@ $success = '';
 
 // Check if the form is submitted
 if (isset($_POST['submit-button'])) {
-    $name = trim(htmlspecialchars($_POST['name']));
-    $email = trim(htmlspecialchars($_POST['email']));
-    $brandname = trim(htmlspecialchars($_POST['brandname']));
-    $message = trim(htmlspecialchars($_POST['message']));
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $brandname = trim($_POST['brandname'] ?? '');
+    $message = trim($_POST['message'] ?? '');
     // Validate the input
     if ($name === '' || $email === '' || $brandname === '' || $message === '') {
         $error = "All fields are required and cannot be just spaces.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } else {
-        $checkQuery = "SELECT * FROM contact_info WHERE email = '$email'";
-        $checkResult = mysqli_query($connect, $checkQuery);
-        if (mysqli_num_rows($checkResult) > 0) {
+        // SEBELUM: query interpolasi. SESUDAH: prepared. ALASAN: $email dari
+        // user; pola "' OR '1'='1" sebelumnya bisa membocorkan/memanipulasi DB.
+        $stmt = $connect->prepare("SELECT id FROM contact_info WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $checkResult = $stmt->get_result();
+        if ($checkResult->num_rows > 0) {
             $success = "Thank you, $name! Your message has been sent.";
             //the mail will be sent but the contact info won't be saved to the database
         } else {
-            $query = "INSERT INTO contact_info (name, email, brandname) VALUES ('$name', '$email', '$brandname')";
-            mysqli_query($connect, $query);
-            $success = "Thank you, $name! Your message has been sent.";
+            $ins = $connect->prepare("INSERT INTO contact_info (name, email, brandname) VALUES (?, ?, ?)");
+            $ins->bind_param("sss", $name, $email, $brandname);
+            if ($ins->execute()) {
+                $success = "Thank you, $name! Your message has been sent.";
+            } else {
+                error_log('[PortoPro] contact insert gagal: ' . $connect->error);
+                $error = "Something went wrong. Please try again.";
+            }
+            $ins->close();
         }
+        $stmt->close();
     }
     //Send email to the site owner (I turned it off because I didn't configure the PHP mail function on my local server)
     //$to = "infoheyje@gmail.com"
@@ -35,6 +57,8 @@ if (isset($_POST['submit-button'])) {
     //$headers = "From: $email\r\n";
     //$message_body = "Name: $name\n Email: $email\n Brand Name: $brandname\n Message: $message";
     //mail($to, $subject, $message_body, $headers);
+    // CATATAN RENDER: fungsi mail() bawaan tidak jalan di Render. Bila ingin
+    // email aktif: pakai API (Resend/Brevo) via curl di blok ini.
 }
 ?>
 
@@ -56,7 +80,9 @@ if (isset($_POST['submit-button'])) {
         <h4>Or just fill out the form below:</h4>
         <?php
             if (!empty($success)) {
-                echo "<br><p class='php-message'>$success</p>";
+                // SEBELUM: echo $success mentah ($name user ikut → XSS).
+                // SESUDAH: e() saat tampil. ALASAN: nama bisa berisi <script>.
+                echo "<br><p class='php-message'>" . e($success) . "</p>";
             }
         ?>
         <form action="index.php?act=ct" method="POST" class="form">
@@ -76,7 +102,7 @@ if (isset($_POST['submit-button'])) {
         </form>
         <?php
             if (!empty($error)) {
-                echo "<p class='php-message'>$error</p>";
+                echo "<p class='php-message'>" . e($error) . "</p>";
             }
         ?>
     </div>

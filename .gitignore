@@ -1,0 +1,11 @@
+# .env asli (kredensial!) jangan masuk Git — pakai .env.example sebagai acuan.
+.env
+# Hasil composer (tidak dipakai sekarang, tapi siapkan bila nanti tambah SDK).
+vendor/
+# Upload lokal dev — jangan commit foto besar; di production pakai Cloudinary.
+media/image/uploads/*
+!media/image/uploads/.gitkeep
+# Sesi/tmp lokal
+.tmp/
+*.log
+.DS_Store

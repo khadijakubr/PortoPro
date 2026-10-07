@@ -1,6 +1,14 @@
 <?php
-include_once 'connection.php';
-include_once 'navigation.php';
+// ============================================================================
+// [RENDER-FIX 7 lanjutan] list_clients.php
+// SEBELUM  : include connection.php mentah + echo htmlspecialchars per-baris
+//           (sudah benar, dipertahankan) tapi tanpa bootstrap (session/cookie
+//           tidak aman bila diakses langsung).
+// SESUDAH : lewat bootstrap.php; logika tampil tetap sama.
+// ============================================================================
+require_once __DIR__ . '/../config/bootstrap.php';
+// [RESTRUKTUR] navigation/footer pindah ke includes/.
+include_once __DIR__ . '/../includes/navigation.php';
 
 $message = "";
 
@@ -14,20 +22,22 @@ if ($result) {
         $clients[] = $row;
     }
 } else {
-    $message = "Error fetching clients: " . mysqli_error($connect);
+    error_log('[PortoPro] fetch clients gagal: ' . mysqli_error($connect));
+    $message = "Error fetching clients. Try again.";
 }
 ?>
 
 <?php if (isset($_SESSION['admin_loggedin']) && $_SESSION['admin_loggedin'] === true) { ?>
 <div class="list-clients-container">
     <h1>Client Information</h1>
+    <?php if ($message !== '') { echo "<p class='php-message'>" . e($message) . "</p>"; } ?>
     <table>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Brand</th>
             </tr>
-            <?php foreach ($clients as $client){ 
+            <?php foreach ($clients as $client){
                 $client_name = htmlspecialchars($client['name']);
                 $client_email = htmlspecialchars($client['email']);
                 $client_brand = htmlspecialchars($client['brandname']);
@@ -45,5 +55,6 @@ if ($result) {
 <?php } ?>
 
 <?php
-include_once 'footer.php';
+// [RESTRUKTUR] footer pindah ke includes/.
+include_once __DIR__ . '/../includes/footer.php';
 ?>
