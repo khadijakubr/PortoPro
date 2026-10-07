@@ -1,3 +1,13 @@
+<?php
+// [FIX-HEADERS 2026-10-07]
+// SEBELUM  : koneksi DB dimuat di dalam <body> (via navigation.php) — saat
+//           koneksi gagal, http_response_code(500) + session cookie tidak bisa
+//           dikirim karena HTML sudah terlanjur keluar ("headers already sent"
+//           di log + halaman putih).
+// SESUDAH : bootstrap (env + DB + session) dimuat SEBELUM output apa pun.
+//           Gagal koneksi = pesan rapi + status 500 benar, bukan layar putih.
+require_once __DIR__ . '/config/bootstrap.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

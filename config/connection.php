@@ -64,14 +64,25 @@ if (!$connect) {
 
 try {
     if ($db_ssl) {
-        // SEBELUM: tanpa SSL. SESUDAH: SSL aktif. ALASAN: DB cloud menolak
-        // koneksi non-SSL; flag DONT_VERIFY cocok untuk serverless free tier
-        // tanpa file CA (kecuali DB_SSL_CA diisi path sertifikat).
+        // [FIX-TLS 2026-10-07]
+        // SEBELUM  : hanya oper flag MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+        //           ke mysqli_real_connect() tanpa mysqli_ssl_set(). Di mysqlnd
+        //           TLS tidak selalu ternegosiasi → TiDB menolak: "Connections
+        //           using insecure transport are prohibited".
+        // SESUDAH : selalu panggil mysqli_ssl_set() DULU (ini pemicu TLS di
+        //           mysqlnd) + options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT,false)
+        //           bila tanpa CA. Enkripsi tetap aktif; yang dilewati hanya
+        //           verifikasi identitas cert (wajar untuk free tier).
+        //           Bila DB_SSL_CA diisi file CA valid → verifikasi penuh.
         $ca = portopro_env('DB_SSL_CA', '');
         if ($ca !== '' && is_readable($ca)) {
             mysqli_ssl_set($connect, null, null, $ca, null, null);
             $flags = MYSQLI_CLIENT_SSL;
         } else {
+            if (defined('MYSQLI_OPT_SSL_VERIFY_SERVER_CERT')) {
+                $connect->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+            }
+            mysqli_ssl_set($connect, null, null, null, null, null);
             $flags = defined('MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT')
                 ? MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
                 : MYSQLI_CLIENT_SSL;
