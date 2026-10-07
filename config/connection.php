@@ -64,21 +64,24 @@ if (!$connect) {
 
 try {
     if ($db_ssl) {
-        // [FIX-TLS 2026-10-07]
-        // SEBELUM  : hanya oper flag MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
-        //           ke mysqli_real_connect() tanpa mysqli_ssl_set(). Di mysqlnd
-        //           TLS tidak selalu ternegosiasi → TiDB menolak: "Connections
-        //           using insecure transport are prohibited".
-        // SESUDAH : selalu panggil mysqli_ssl_set() DULU (ini pemicu TLS di
-        //           mysqlnd) + options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT,false)
-        //           bila tanpa CA. Enkripsi tetap aktif; yang dilewati hanya
-        //           verifikasi identitas cert (wajar untuk free tier).
-        //           Bila DB_SSL_CA diisi file CA valid → verifikasi penuh.
+        // [FIX-TLS-2 2026-10-07]
+        // SEBELUM  : tanpa CA (skip-verify) → di image ini TLS tidak
+        //           ternegosiasi sama sekali → TiDB: "insecure transport".
+        // SESUDAH : pakai CA bundle publik OS
+        //           (/etc/ssl/certs/ca-certificates.crt, bawaan Debian di
+        //           image php:*-apache) + verifikasi PENUH. TiDB Serverless
+        //           memakai cert publik, jadi verifikasi penuh berhasil tanpa
+        //           unduh apa pun. DB_SSL_CA tetap didukung untuk override.
         $ca = portopro_env('DB_SSL_CA', '');
+        if ($ca === '' || !is_readable($ca)) {
+            $os_ca = '/etc/ssl/certs/ca-certificates.crt';
+            if (is_readable($os_ca)) $ca = $os_ca;
+        }
         if ($ca !== '' && is_readable($ca)) {
             mysqli_ssl_set($connect, null, null, $ca, null, null);
-            $flags = MYSQLI_CLIENT_SSL;
+            $flags = MYSQLI_CLIENT_SSL; // verifikasi penuh
         } else {
+            // Darurat tanpa CA apa pun: enkripsi tanpa verifikasi identitas.
             if (defined('MYSQLI_OPT_SSL_VERIFY_SERVER_CERT')) {
                 $connect->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
             }

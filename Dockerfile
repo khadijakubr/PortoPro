@@ -12,9 +12,11 @@
 # ============================================================================
 FROM php:8.3-apache
 
-# Extension yang dipakai app: mysqli (koneksi DB) + curl (upload Cloudinary)
+# Extension yang dipakai app: mysqli (koneksi DB) + curl (upload Cloudinary).
+# ca-certificates WAJIB: connection.php memakai CA bundle OS
+# (/etc/ssl/certs/ca-certificates.crt) untuk TLS verifikasi-penuh ke TiDB.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libcurl4-openssl-dev \
+    && apt-get install -y --no-install-recommends ca-certificates libcurl4-openssl-dev \
     && docker-php-ext-install mysqli pdo pdo_mysql curl \
     && docker-php-ext-enable mysqli \
     && a2enmod rewrite headers \
